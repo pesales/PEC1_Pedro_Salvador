@@ -3,6 +3,9 @@ title: "Pedro_Salvador_ADO_PEC1"
 author: "Pedro Salvador Escribano"
 date: "7/4/2020"
 output:
+  word_document:
+    toc: yes
+    toc_depth: '2'
   pdf_document:
     keep_tex: yes
     toc: yes
@@ -12,15 +15,7 @@ output:
     number_sections: yes
     toc: yes
     toc_float: yes
-  word_document:
-    toc: yes
-    toc_depth: '2'
 ---
-
-<style>
-body {
-text-align: justify}
-</style>
 
 ```{r setup, include=FALSE}
 library(knitr)
