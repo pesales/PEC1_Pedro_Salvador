@@ -1,0 +1,666 @@
+---
+title: "Pedro_Salvador_ADO_PEC1"
+author: "Pedro Salvador Escribano"
+date: "7/4/2020"
+output:
+  pdf_document:
+    keep_tex: yes
+    toc: yes
+    toc_depth: 2
+  html_document:
+    code_folding: hide
+    number_sections: yes
+    toc: yes
+    toc_float: yes
+  word_document:
+    toc: yes
+    toc_depth: '2'
+---
+
+<style>
+body {
+text-align: justify}
+</style>
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE, 
+                      comment = NA, prompt = TRUE, tidy = FALSE, 
+                      fig.width = 7, fig.height = 7, fig_caption = TRUE,
+                      cache=FALSE)
+Sys.setlocale("LC_TIME", "C")
+```
+
+```{r echo=FALSE}
+if(!(require(printr))) {
+  install.packages(
+    'printr',
+    type = 'source',
+    repos = c('http://yihui.name/xran', 'http://cran.rstudio.com')
+  )
+}
+```
+
+https://github.com/pesales/PEC1_Pedro_Salvador/
+
+# Abstract.
+
+Se ha observado una función inmunitaria alterada en los astronautas que regresan de misiones espaciales. En este estudio se ha encontrado como posibles causas, la alteración de rutas relacionadas con la señalización del interferón gamma, la degranulación de neutrófilos o la regulación transcripcional de p53.
+
+# Objetivos: Que se pretende con este estudio.
+
+En este estudio se analiza la causa de la alteración de la función inmunitaria sufrida por los astronautas tras su regreso a la tierra. Para ello, se utiliza un modelo de gravedad alterada simulada con el que se simula la diferenciación de células inumitarias bajo estas condiciones atípicas. Se analiza las diferencias en la expresión génica de células T, tras su diferenciación en condiciones de gravedad normal (1g) o gravedad variante (vg).
+
+# Materiales y Métodos.
+
+## Aislamiento de células T, cultivo y activación:
+
+Se aislaron leucocitos de sangre periférica de 3 donantes humanos mediante centrifugación de gradiente de densidad con Ficoll (Red Cross, Zurich, Suiza) y las células T fueron purifecadas usando columnas de alta afinidad para células T CD3$^+$ (R&D Systems, Minneapolis, MN). Las células fueron resuspendidas en RPMI-1640 con un 10% de suero bovino fetal a 3-8 millones de células/ml. Una porción de estas células fue activada con 5$\mu$g/ml de concavalina A (Sigma, St. Louis, MO) y 4$\mu$g/ml de antucuerpo anti-CD28 (PharMingen, San Diego, CA) e incubada a 37ºC durante 4 horas a 1g o en una Random positioning machine (RPM) (Dutch Space, Leiden, Países Bajos) rotando a 60º/s con controles inactivados.
+
+## Extracción de RNA y lavado:
+
+Se aisló el RNA usando isotiocianato de guanidinio y se lavó con columnas RNeasy® MinElute (Qiagen, Valencia, CA). La concentración y pureza de ARN se determinaron midiendo la absorbancia a 260 y 280 nm con un GeneQuant (Pfizer, Nueva York, NY); Se corrieron 0,3 $\mu$g de ARN total en un gel desnaturalizante al 1%, o se cargaron 100 ng de ARN total en el bioanalizador 2100 (Agilent, Palo Alto, CA) para verificar la integridad del ARN.
+
+## Análisis por microarray:
+
+Se utilizó el Human Genome Focus Array (Affymetrix, Santa Clara, CA),  compuesto por 8,796 conjuntos de sondas correspondientes a genes bien anotados de la base de datos RefSeq de NCBI; 1,8 $\mu$g de ARN total fueron alicuotados para lasíntesis de  para la síntesis de ADNc  usando cebador oligo-(dT) purificado por HPLC (Affymetrix) y transcriptasa inversa 200 U SuperScript$^{TM}$ II (Invitrogen, Carlsbad, CA). Diez microlitros del ADNc se dividieron en alícuotas para la transcripción in vitro y el marcado de biotina usando BioArrayTM high yieldTM RNA transcription labeling kit (Enzo, New York, NY).. La reacción se incubó durante 10h a 37°C. Después de la fragmentación de cRNA, las muestras fueron se llevaron al Gladstone Institute Genomics Core. Diez microgramos del cRNA marcado se hibridaron a una concentración final de 0,05 $\mu$g/μl en arrays Focus a 45°C durante 16 h. Los arrays se tiñeron usando  Fluidics Station 400 (Affymetrix) y se escanearon usando un escáner GeneArray® (Affymetrix).
+
+## Procedimiento de análisis de los datos:
+
+Se siguió el procedimiento general de análisis de datos porcedentes de experimentos por microarray:
+
+### Identificar que grupos hay y a qué grupo pertenece cada muestra.
+
+Los archivos CEL de las muestras con número de acceso GSM24817, GSM29564, GSM29565, GSM29566, GSM29567, GSM29568, GSM29569, GSM29570, GSM29571, GSM29572, GSM29573, y GSM29574, con número de acceso de serie GSE170 se obtuvieron de http://www.ncbi.nlm.nih.gov/geo/browse/?view=series. Se identificó el grupo al que pertenecía cada una de las muestras y se creó el archivo targets.csv. Los archivos CEl y CSV fueron cargados dentro de la carpeta data.
+
+### Control de calidad de los datos crudos
+
+Los datos fueron cargados en la variable rawData y clasificados según el archivo targets en los diferentes grupos.
+El control de calidad de estos datos se almacenó en la carpeta "QCDir.Raw", dentro de la carpeta de resultados. Dentro de esta carpeta se generó el archivo "index.html" que contiene la información del control de calidad. Se observaron discrepancias entre los datos que justificaron la posterior normalización de los datos. Se visualizó mediente un boxplot para la variabilidad de la intensidad de la señal entre muestras normalizadas. También se buscaron relaciones entre las muestras con un análisis de componentes principales en el que, a priori, no se detectaban relaciones fuertes entre las mismas.
+
+### Normalización
+
+Se procedió a la normalización de los datos en la variable eset_rma.
+
+### Control de calidad de los datos normalizados
+
+El control de calidad de estos datos se almacenó en la carpeta "QCDir.Norm", dentro de la carpeta de resultados. Dentro de esta carpeta se generó el archivo "index.html" que contiene la información del control de calidad. Tras la normalización de los datos, las diferencias entre arrays habían sido mitigadas. La variabilidad de la intensidad de la señal entre muestras normalizadas se visualizó mediente un boxplot. También se buscaron relaciones entre las muestras con un análisis de componentes principales en el que, a priori, no se detectaban relaciones fuertes entre las mismas.
+
+### Identificación de genes diferencialmente expresados
+
+Partiendo de los datos normalizados, se filtraron los genes menos variables y se guardaron en la variable eset_filtered. Se definió la matriz de diseño y la matriz de contrastes. Se obtuvo la lista de genes que se expresan de manera diferente cuando se activan en función de si la gravedad es constante o variable (topTab_VGVSGTREATED) y la lista de genes que se expresan de manera diferente en función de si la gravedad es constante o variable antes de activarse (topTab_VGVSGNONTREATED).
+
+### Anotación de los resultados
+
+La anotación de los genes se hizo utilizando el paquete de anotación hgfocus.db, correspondiente al micorarray utilizado. Se obtuvo a lista anotada de genes que se expresan de manera diferente cuando se activan en función de si la gravedad es constante o variable (topAnnotated_VGVSGTREATED) y la lista anotada de genes que se expresan de manera diferente en función de si la gravedad es constante o variable antes de activarse (topAnnotated_VGVSGNONTREATED).
+
+### Comparación entre distintas comparaciones (si hay más de una comparación, ver que genes han sido seleccionados en más de una comparación)
+
+Se representó mediante un diagrama de Venn y mediante volcano Plots, los genes que estaban representados en cada una de las comparaciones. También se realizaron Heatmaps para visualizar el agrupamiento de las muestras según estos resultados.
+
+### Análisis de significación biológica (“Gene Enrichment Analysis”)
+
+Se agrupó los genes diferencialmente expresados dentro de funciones y rutas moleculares conocidas y se representó las principales de estas funciones que se encontraban alteradas en cada una de las comparaciones(ReactomePA.Results.VGVSGTREATED y ReactomePA.Results.VGVSGNONTREATED).
+
+# Resultados.
+
+Como resultado de este análisis se ha obtenido listas de genes y funciones diferencialmente expresadas en cada una de las comparaciones. Una lista detallada de estos resultados puede ser consultada en el último punto del apéndice, resumen de resultados.
+
+# Discusión.
+
+Los resultados aportados por este estudio deben ser interpretados con cautela, pues únicamente se ha utilizado un tipo celular para este experimento. Sería necesario completar este estudio con los diferentes tipos celulares pertenecientes al sistema inmunitario para obtener una visión global del estado del mismo en el individuo en condiciones de gravedad alterada.
+
+# Apéndice (Código utilizado para el análisis).
+
+## Cargado de datos y consideraciones previas:
+
+Crear un directorio donde se almacenará todos los datos del análisis, incluidos datos brutos, intermedios y resultados:
+
+```{r CreateFolders, warning=FALSE, eval=FALSE}
+setwd("C:/Users/peri8/Google Drive/Master UOC/Análisis de datos ómicos/PEC1/Estudio_gravedad")
+dir.create("data")
+dir.create("results")
+```
+
+Cargar el archivo que describe los datos:
+```{r}
+# Tras compiar los datos .CEL y target (que contienen la información de grupos y covariables de los diferentes archivos) se carga el archivo targets:
+targets <- read.csv2("./data/targets.csv", header = TRUE, sep = ";") 
+knitr::kable(
+  targets, booktabs = TRUE,
+  caption = 'Content of the targets file used for the current analysis')
+```
+
+## Instalación previa de paquetes requeridos:
+
+```{r installBioC, message=FALSE, warning=FALSE, eval=FALSE}
+if (!requireNamespace("BiocManager", quietly = TRUE))
+    install.packages("BiocManager")
+BiocManager::install()
+```
+
+```{r installPackages, message=FALSE, warning=FALSE, eval=FALSE}
+install.packages("knitr")
+install.packages("colorspace")
+install.packages("gplots")
+install.packages("ggplot2")
+install.packages("ggrepel")
+install.packages("htmlTable")
+install.packages("prettydoc")
+install.packages("devtools")
+install.packages("BiocManager")
+BiocManager::install("oligo")
+BiocManager::install("pd.mogene.2.1.st")
+BiocManager::install("arrayQualityMetrics")
+BiocManager::install("pvca")
+# NOT NEEDED UNTIL ANALYSES ARE PERFORMED
+BiocManager::install("limma")
+BiocManager::install("genefilter")
+BiocManager::install("hgfocus.db")
+BiocManager::install("annotate")
+BiocManager::install("org.Mm.eg.db")
+BiocManager::install("ReactomePA")
+BiocManager::install("reactome.db")
+BiocManager::install("org.Mm.eg.db")
+BiocManager::install("org.Mm.egPATH")
+```
+
+## Lectura de archivos CEL:
+```{r ReadCELfiles, message=FALSE, results='hide', warning=FALSE}
+library(oligo)
+celFiles <- list.celfiles("./data", full.names = TRUE)
+library(Biobase)
+my.targets <-read.AnnotatedDataFrame(file.path("./data","targets.csv"), 
+                                     header = TRUE, row.names = 1, 
+                                     sep=";") 
+rawData <- read.celfiles(celFiles, phenoData = my.targets)
+```
+
+```{r ChangeName}
+my.targets@data$ShortName->rownames(pData(rawData))
+colnames(rawData) <-rownames(pData(rawData)) 
+
+head(rawData)
+```
+
+## Control de calidad de datos brutos:
+
+```{r QCRaw, message=FALSE, warning=FALSE, eval=FALSE}
+library(arrayQualityMetrics)
+arrayQualityMetrics(rawData, outdir = file.path("./results", "QCDir.Raw"), force=TRUE)
+```
+
+Tras esto se creará una carpeta "QCDir.Raw", dentro de la carpeta de resultados. Dentro de esta carpeta hay que buscar un archivo"index.html" que contiene la información del control de calidad. Si las muestras no tienen mas de una marca, son aptas para continuar con el análisis y los problemas que presentan son pequeños. En caso contrario hay que proceder a la normalización de los datos.
+
+Mediante un PCA se visualizan las relaciones enntre muestras:
+
+```{r}
+library(ggplot2)
+library(ggrepel)
+plotPCA3 <- function (datos, labels, factor, title, scale,colores, size = 1.5, glineas = 0.25) {
+  data <- prcomp(t(datos),scale=scale)
+  # plot adjustments
+  dataDf <- data.frame(data$x)
+  Group <- factor
+  loads <- round(data$sdev^2/sum(data$sdev^2)*100,1)
+  # main plot
+  p1 <- ggplot(dataDf,aes(x=PC1, y=PC2)) +
+    theme_classic() +
+    geom_hline(yintercept = 0, color = "gray70") +
+    geom_vline(xintercept = 0, color = "gray70") +
+    geom_point(aes(color = Group), alpha = 0.55, size = 3) +
+    coord_cartesian(xlim = c(min(data$x[,1])-5,max(data$x[,1])+5)) +
+    scale_fill_discrete(name = "Group")
+  # avoiding labels superposition
+  p1 + geom_text_repel(aes(y = PC2 + 0.25, label = labels),segment.size = 0.25, size = size) + 
+    labs(x = c(paste("PC1",loads[1],"%")),y=c(paste("PC2",loads[2],"%"))) +  
+    ggtitle(paste("Principal Component Analysis for: ",title,sep=" "))+ 
+    theme(plot.title = element_text(hjust = 0.5)) +
+    scale_color_manual(values=colores)
+  }
+```
+
+```{r PCARaw, message=FALSE, fig.cap="Visualization of the two first Principal Components for raw data"}
+plotPCA3(exprs(rawData), labels = targets$ShortName, factor = targets$Group, 
+         title="Raw data", scale = FALSE, size = 3, 
+         colores = c("red", "blue", "green", "yellow"))
+```
+
+Se realiza un boxplot para ver la variabilidad de la intensidad de la señal entre muestras:
+
+```{r BoxplotRaw, message=FALSE, fig.cap="Boxplot for arrays intensities (Raw Data)"}
+boxplot(rawData, cex.axis=0.5, las=2,  which="all", 
+         col = c(rep("red", 3), rep("blue", 3), rep("green", 3), rep("yellow", 3)),
+         main="Distribution of raw intensity values")
+```
+
+## Normalización de los datos:
+
+```{r Normalization}
+eset_rma <- rma(rawData)
+```
+
+## Control de calidad de datos normalizados:
+
+```{r QCNorm, message=FALSE, warning=FALSE, eval=FALSE}
+arrayQualityMetrics(eset_rma, outdir = file.path("./results", "QCDir.Norm"), force=TRUE)
+```
+
+Se crea una carpeta dentro de resultados que contiene el control de calidad de los datos normalizados. El archivo index.html contiene el report.
+
+Visualizo el PCA con los datos normalizados
+
+```{r PCANorm, message=FALSE, fig.cap="Visualization of first two principal components for normalized data"}
+plotPCA3(exprs(eset_rma), labels = targets$ShortName, factor = targets$Group, 
+         title="Normalized data", scale = FALSE, size = 3, 
+         colores = c("red", "blue", "green", "yellow"))
+```
+
+Visualizo un boxplot para ver la variabilidad de la intensidad de la señal entre muestras normalizadas:
+
+```{r BoxplotNorm, message=FALSE, fig.cap="Distribution of  intensities for normalized data"}
+boxplot(eset_rma, cex.axis=0.5, las=2,  which="all", 
+         col = c(rep("red", 3), rep("blue", 3), rep("green", 3), rep("yellow", 3)),
+         main="Boxplot for arrays intensity: Normalized Data")
+```
+
+## Detección de lotes por  Principal Variation Component Analysis:
+
+```{r BatchDetection, message=FALSE, warning=FALSE}
+#load the library
+library(pvca)
+pData(eset_rma) <- targets
+#select the threshold
+pct_threshold <- 0.6
+#select the factors to analyze
+batch.factors <- c("Gravity", "Activation")
+#run the analysis
+pvcaObj <- pvcaBatchAssess (eset_rma, batch.factors, pct_threshold)
+```
+
+```{r plotPVCA, fig.cap="Relative importance of the different factors -genotype, temperature and interaction- affecting gene expression"}
+#plot the results
+bp <- barplot(pvcaObj$dat, xlab = "Effects",
+  ylab = "Weighted average proportion variance",
+  ylim= c(0,1.1),col = c("mediumorchid"), las=2,
+  main="PVCA estimation")
+axis(1, at = bp, labels = pvcaObj$label, cex.axis = 0.55, las=2)
+values = pvcaObj$dat
+new_values = round(values , 3)
+text(bp,pvcaObj$dat,labels = new_values, pos=3, cex = 0.5)
+```
+
+## Detección de genes mas variables:
+
+Aquí se mostrarán aquellos genes cuya desviación estandard esté por encima del 90 y 95% de todas las desviaciones estandard
+
+```{r SDplot, fig.cap="Values of standard deviations allong all samples for all genes ordered from smallest to biggest"}
+sds <- apply (exprs(eset_rma), 1, sd)
+sdsO<- sort(sds)
+plot(1:length(sdsO), sdsO, main="Distribution of variability for all genes",
+     sub="Vertical lines represent 90% and 95% percentiles",
+     xlab="Gene index (from least to most variable)", ylab="Standard deviation")
+abline(v=length(sds)*c(0.9,0.95))
+```
+
+## Filtrado de genes menos variables:
+
+```{r Filtering1, results='hide', message=FALSE}
+library(genefilter)
+library(hgfocus.db)
+annotation(eset_rma) <- "hgfocus.db"
+filtered <- nsFilter(eset_rma, 
+                     require.entrez = TRUE, remove.dupEntrez = TRUE,
+                     var.filter=TRUE, var.func=IQR, var.cutoff=0.75, 
+                     filterByQuantile=TRUE, feature.exclude = "^AFFX")
+```
+
+```{r FilterResults1, results='hide', echo=FALSE}
+names(filtered)
+class(filtered$eset)
+```
+
+## Guardado de datos filtrados y normalizados:
+
+```{r FilterResults2}
+print(filtered$filter.log)
+eset_filtered <-filtered$eset
+```
+
+```{r SaveData1, results='hide', message=FALSE}
+write.csv(exprs(eset_rma), file="./results/normalized.Data.csv")
+write.csv(exprs(eset_filtered), file="./results/normalized.Filtered.Data.csv")
+save(eset_rma, eset_filtered, file="./results/normalized.Data.Rda")
+```
+
+## Definición de la matriz de diseño:
+
+```{r LoadSavedData}
+if (!exists("eset_filtered")) load (file="./results/normalized.Data.Rda")
+```
+
+```{r DesignMatrix, message=FALSE}
+library(limma)
+designMat<- model.matrix(~0+Group, pData(eset_filtered))
+colnames(designMat) <- c("G.NONTREATED", "G.TREATED", "VG.NONTREATED", "VG.TREATED")
+print(designMat)
+```
+
+## Definición de comparaciones con matriz de contrastes:
+
+```{r setContrasts}
+cont.matrix <- makeContrasts (VGVSGTREATED = VG.TREATED-G.TREATED,
+                              VGVSGNONTREATED = VG.NONTREATED-G.NONTREATED,
+                              INT = (VG.TREATED-G.TREATED) - (VG.NONTREATED-G.NONTREATED),
+                              levels=designMat)
+print(cont.matrix)
+```
+
+## Estimación del modelo y selección de genes:
+
+```{r, linearmodelfit}
+library(limma)
+fit<-lmFit(eset_filtered, designMat)
+fit.main<-contrasts.fit(fit, cont.matrix)
+fit.main<-eBayes(fit.main)
+class(fit.main)
+```
+
+## Obtención de genes diferencialmente expresados:
+
+Para la primera comparación: Genes que se expresan de manera diferente cuando se activan en función de si la gravedad es constante o variable.
+
+```{r, topTabs1}
+topTab_VGVSGTREATED <- topTable (fit.main, number=nrow(fit.main), coef="VGVSGTREATED", adjust="fdr") 
+head(topTab_VGVSGTREATED)
+```
+
+Para la segunda comparación: Genes que se expresan de manera diferente en función de si la gravedad es constante o variable antes de activarse 
+
+```{r, topTabs2}
+topTab_VGVSGNONTREATED <- topTable (fit.main, number=nrow(fit.main), coef="VGVSGNONTREATED", adjust="fdr") 
+head(topTab_VGVSGNONTREATED)
+```
+
+Para la tercera comparación (INT): Genes que se comportan diferente entre la comparación 1 y 2:
+
+```{r, topTabs3}
+topTab_INT  <- topTable (fit.main, number=nrow(fit.main), coef="INT", adjust="fdr") 
+head(topTab_INT)
+```
+
+## Anotación génica:
+
+```{r GeneAnnotation, message=FALSE, warning=FALSE}
+annotatedTopTable <- function(topTab, anotPackage)
+{
+  topTab <- cbind(PROBEID=rownames(topTab), topTab)
+  myProbes <- rownames(topTab)
+  thePackage <- eval(parse(text = anotPackage))
+  geneAnots <- select(thePackage, myProbes, c("SYMBOL", "ENTREZID", "GENENAME"))
+  annotatedTopTab<- merge(x=geneAnots, y=topTab, by.x="PROBEID", by.y="PROBEID")
+return(annotatedTopTab)
+}
+```
+
+```{r annotateTopTables}
+topAnnotated_VGVSGTREATED  <- annotatedTopTable(topTab_VGVSGTREATED,
+anotPackage="hgfocus.db")
+topAnnotated_VGVSGNONTREATED <- annotatedTopTable(topTab_VGVSGNONTREATED,
+anotPackage="hgfocus.db")
+topAnnotated_INT <- annotatedTopTable(topTab_INT,
+anotPackage="hgfocus.db")
+write.csv(topAnnotated_VGVSGTREATED, file="./results/topAnnotated_VGVSGTREATED.csv")
+write.csv(topAnnotated_VGVSGNONTREATED, file="./results/topAnnotated_VGVSGNONTREATED.csv")
+write.csv(topAnnotated_INT, file="./results/topAnnotated_INT.csv")
+```
+
+```{r annotatedTop, echo=FALSE}
+short<- head(topAnnotated_VGVSGTREATED[1:5,1:4])
+# library(kableExtra)
+# knitr::kable(
+#   short, booktabs = TRUE,
+#   caption = 'Anotaciones para "topTable" para la comparación "VGVSGTREATED"'
+# )
+show(short)
+```
+
+## Visualización de expresión diferencial:
+
+```{r volcanoPlot, fig.cap="Volcano plot. Genes que se expresan de manera diferente cuando se activan en función de si la gravedad es constante o variable. Se muestran los nombres de los 4 más variables (i.e. cuatro primeros genes en topTable)"}
+library(hgfocus.db)
+geneSymbols <- select(hgfocus.db, rownames(fit.main), c("SYMBOL"))
+SYMBOLS<- geneSymbols$SYMBOL
+volcanoplot(fit.main, coef=1, highlight=4, names=SYMBOLS, 
+            main=paste("Differentially expressed genes", colnames(cont.matrix)[1], sep="\n"))
+  abline(v=c(-1,1))
+
+```
+
+```{r volcanoPlot2, fig.cap="Volcano plot. Genes que se expresan de manera diferente en función de si la gravedad es constante o variable antes de activarse. Se muestran los nombres de los 4 más variables (i.e. cuatro primeros genes en topTable)"}
+library(hgfocus.db)
+geneSymbols <- select(hgfocus.db, rownames(fit.main), c("SYMBOL"))
+SYMBOLS<- geneSymbols$SYMBOL
+volcanoplot(fit.main, coef=2, highlight=4, names=SYMBOLS, 
+            main=paste("Differentially expressed genes", colnames(cont.matrix)[2], sep="\n"))
+  abline(v=c(-1,1))
+
+```
+
+```{r volcanoPlot3, fig.cap="Volcano plot. Genes que se comportan diferente entre la comparación 1 y 2. Se muestran los nombres de los 4 más variables (i.e. cuatro primeros genes en topTable)"}
+library(hgfocus.db)
+geneSymbols <- select(hgfocus.db, rownames(fit.main), c("SYMBOL"))
+SYMBOLS<- geneSymbols$SYMBOL
+volcanoplot(fit.main, coef=3, highlight=4, names=SYMBOLS, 
+            main=paste("Differentially expressed genes", colnames(cont.matrix)[3], sep="\n"))
+  abline(v=c(-1,1))
+
+```
+
+## Comparaciones múltiples:
+
+```{r decideTests.1}
+library(limma)
+res<-decideTests(fit.main, method="separate", adjust.method="none", p.value=0.1, lfc=1)
+```
+
+```{r resumeDecideTests}
+sum.res.rows<-apply(abs(res),1,sum)
+res.selected<-res[sum.res.rows!=0,] 
+print(summary(res))
+```
+
+```{r, vennDiagram, fig.cap="Venn diagram showing the genes in common between the three comparisons performed"}
+vennDiagram (res.selected[,1:3], cex=0.9)
+title("Genes in common between the three comparisons\n Genes selected with FDR < 0.1 and logFC > 1")
+```
+
+## Heatmaps
+
+```{r data4Heatmap}
+probesInHeatmap <- rownames(res.selected)
+HMdata <- exprs(eset_filtered)[rownames(exprs(eset_filtered)) %in% probesInHeatmap,]
+
+geneSymbols <- select(hgfocus.db, rownames(HMdata), c("SYMBOL"))
+SYMBOLS<- geneSymbols$SYMBOL
+rownames(HMdata) <- SYMBOLS
+write.csv(HMdata, file = file.path("./results/data4Heatmap.csv"))
+```
+
+```{r heatmapNoclustering, fig.cap="Heatmap for expression data without any grouping"}
+my_palette <- colorRampPalette(c("blue", "red"))(n = 299)
+library(gplots)
+
+heatmap.2(HMdata,
+          Rowv = FALSE,
+          Colv = FALSE,
+          main = "Differentially expressed genes \n FDR < 0,1, logFC >=1",
+          scale = "row",
+          col = my_palette,
+          sepcolor = "white",
+          sepwidth = c(0.05,0.05),
+          cexRow = 0.5,
+          cexCol = 0.9,
+          key = TRUE,
+          keysize = 1.5,
+          density.info = "histogram",
+          ColSideColors = c(rep("red",3),rep("blue",3), rep("green",3), rep("yellow",3)),
+          tracecol = NULL,
+          dendrogram = "none",
+          srtCol = 30)
+```
+
+```{r heatmapClustering, fig.cap="Heatmap for expression data grouping genes (rows) and samples (columns) by their similarity"}
+heatmap.2(HMdata,
+          Rowv = TRUE,
+          Colv = TRUE,
+          dendrogram = "both",
+          main = "Differentially expressed genes \n FDR < 0,1, logFC >=1",
+          scale = "row",
+          col = my_palette,
+          sepcolor = "white",
+          sepwidth = c(0.05,0.05),
+          cexRow = 0.5,
+          cexCol = 0.9,
+          key = TRUE,
+          keysize = 1.5,
+          density.info = "histogram",
+          ColSideColors = c(rep("red",3),rep("blue",3), rep("green",3), rep("yellow",3)),
+          tracecol = NULL,
+          srtCol = 30)
+
+```
+
+## Significación biológica de los resultados:
+
+```{r selectGenes}
+listOfTables <- list(VGVSGTREATED = topTab_VGVSGTREATED, 
+                     VGVSGNONTREATED  = topTab_VGVSGNONTREATED, 
+                     INT = topTab_INT)
+listOfSelected <- list()
+for (i in 1:length(listOfTables)){
+  # select the toptable
+  topTab <- listOfTables[[i]]
+  # select the genes to be included in the analysis
+  whichGenes<-topTab["P.Value"]<0.15
+  selectedIDs <- rownames(topTab)[whichGenes]
+  # convert the ID to Entrez
+  EntrezIDs<- select(hgfocus.db, selectedIDs, c("ENTREZID"))
+  EntrezIDs <- EntrezIDs$ENTREZID
+  listOfSelected[[i]] <- EntrezIDs
+  names(listOfSelected)[i] <- names(listOfTables)[i]
+}
+sapply(listOfSelected, length)
+```
+
+
+```{r BiologicalSigtreated}
+library(ReactomePA)
+
+listOfData1 <- listOfSelected[1]
+comparisonsNames1 <- names(listOfData1)
+
+for (i in 1:length(listOfData1)){
+  genesIn1 <- listOfData1[[i]]
+  comparison1 <- comparisonsNames1[i]
+  enrich.result1 <- enrichPathway(gene = genesIn1,
+                                 pvalueCutoff = 0.05,
+                                 readable = T,
+                                 pAdjustMethod = "BH",
+                                 organism = "human")
+  
+  cat("##################################")
+  cat("\nComparison1: ", comparison1,"\n")
+  print(head(enrich.result1))
+
+  if (length(rownames(enrich.result1@result)) != 0) {
+  write.csv(as.data.frame(enrich.result1), 
+             file =paste0("./results/","ReactomePA.Results.",comparison1,".csv"), 
+             row.names = FALSE)
+  
+  pdf(file=paste0("./results/","ReactomePABarplot.",comparison1,".pdf"))
+    print(barplot(enrich.result1, showCategory = 15, font.size = 4, 
+            title = paste0("Reactome Pathway Analysis for ", comparison1,". Barplot")))
+  dev.off()
+  
+  pdf(file = paste0("./results/","ReactomePAcnetplot.",comparison1,".pdf"))
+    print(cnetplot(enrich.result1, categorySize = "geneNum", schowCategory = 15, 
+         vertex.label.cex = 0.75))
+  dev.off()
+  }
+}
+```
+
+```{r BiologicalSignontreated}
+library(ReactomePA)
+
+listOfData2 <- listOfSelected[2]
+comparisonsNames2 <- names(listOfData2)
+
+for (i in 1:length(listOfData2)){
+  genesIn2 <- listOfData2[[i]]
+  comparison2 <- comparisonsNames2[i]
+  enrich.result2 <- enrichPathway(gene = genesIn2,
+                                 pvalueCutoff = 0.05,
+                                 readable = T,
+                                 pAdjustMethod = "BH",
+                                 organism = "human")
+  
+  cat("##################################")
+  cat("\nComparison2: ", comparison2,"\n")
+  print(head(enrich.result2))
+
+  if (length(rownames(enrich.result2@result)) != 0) {
+  write.csv(as.data.frame(enrich.result2), 
+             file =paste0("./results/","ReactomePA.Results.",comparison2,".csv"), 
+             row.names = FALSE)
+  
+  pdf(file=paste0("./results/","ReactomePABarplot.",comparison2,".pdf"))
+    print(barplot(enrich.result2, showCategory = 15, font.size = 4, 
+            title = paste0("Reactome Pathway Analysis for ", comparison2,". Barplot")))
+  dev.off()
+  
+  pdf(file = paste0("./results/","ReactomePAcnetplot.",comparison2,".pdf"))
+    print(cnetplot(enrich.result2, categorySize = "geneNum", schowCategory = 15, 
+         vertex.label.cex = 0.75))
+  dev.off()
+  }
+}
+```
+
+```{r network2, fig.cap="Network obtained from the Reactome enrichment analysis on the list obtained from the comparison between VG and 1G non activated"}
+  cnetplot(enrich.result2, categorySize = "geneNum", schowCategory = 15, 
+         vertex.label.cex = 0.75)
+```
+
+```{r network, fig.cap="Network obtained from the Reactome enrichment analysis on the list obtained from the comparison between VG and 1G non activated"}
+  cnetplot(enrich.result1, categorySize = "geneNum", schowCategory = 15, 
+         vertex.label.cex = 0.75)
+```
+
+```{r tableReacto, echo=FALSE}
+Tab.react <- read.csv2(file.path("./results/ReactomePA.Results.VGVSGTREATED.csv"), 
+                       sep = ",", header = TRUE, row.names = 1)
+
+Tab.react <- Tab.react[1:4, 1:5]
+knitr::kable(Tab.react, booktabs = TRUE, caption = "First rows and columns for Reactome results on VGVSGTREATED.csv comparison")
+```
+
+```{r tableReacto2, echo=FALSE}
+Tab.react <- read.csv2(file.path("./results/ReactomePA.Results.VGVSGNONTREATED.csv"), 
+                       sep = ",", header = TRUE, row.names = 1)
+
+Tab.react <- Tab.react[1:4, 1:5]
+knitr::kable(Tab.react, booktabs = TRUE, caption = "First rows and columns for Reactome results on VGVSGNONTREATED.csv comparison")
+```
+
+## Resumen de resultados:
+
+```{r listOfFiles, echo=FALSE}
+listOfFiles <- dir("./results/") 
+knitr::kable(
+  listOfFiles, booktabs = TRUE,
+  caption = 'List of files generated in the analysis',
+  col.names="List_of_Files"
+)
+```
